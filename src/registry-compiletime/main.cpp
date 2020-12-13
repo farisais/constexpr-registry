@@ -39,7 +39,7 @@ struct RegistryTmpl{
     }
 
     // Initialize by copy
-    constexpr RegistryTmpl<K,V,N> operator=(const RegistryTmpl<K,V,N>& arr_cp){
+    constexpr RegistryTmpl<K,V,N> operator=(const RegistryTmpl<K,V,N>& arr_cp) noexcept{
         RegistryTmpl<K,V,N> tmp(arr_cp);
         return tmp;
     }
@@ -52,21 +52,19 @@ struct RegistryTmpl{
 typedef std::string_view K;
 typedef int V;
 
-class A{
-    public:
-    A(){
-        
-    }
-};
-
 #define A_REF __COUNTER__ + 1
 constexpr RegistryTmpl<K,V,A_REF> arr_A("A", 0);
 #define ARR_NAME arr_A
 
-class B{
+class A{
     public:
-    B(){
-    
+    A(){
+        std::cout << "Call from A constructor: " << std::endl;
+        std::cout << "Key = " 
+                  << ARR_NAME.key_store[0]
+                  << "| Val = " 
+                  << ARR_NAME.value_store[0]
+                  << std::endl;
     }
 };
 
@@ -74,16 +72,35 @@ class B{
 constexpr RegistryTmpl<K,V,B_REF> arr_B("B", 1, ARR_NAME);
 #define ARR_NAME arr_B
 
-class C{
+class B{
     public:
-    C(){
-    
+    B(){
+        std::cout << "Call from B constructor: " << std::endl;
+        std::cout << "Key = " 
+                  << ARR_NAME.key_store[0]
+                  << "| Val = " 
+                  << ARR_NAME.value_store[0]
+                  << std::endl;
     }
 };
 
 #define C_REF __COUNTER__ + 1
 constexpr RegistryTmpl<K,V,C_REF> arr_C("C", 2, ARR_NAME);
 #define ARR_NAME arr_C
+
+class C{
+    public:
+    C(){
+        std::cout << "Call from C constructor: " << std::endl;
+        std::cout << "Key = " 
+                  << ARR_NAME.key_store[0]
+                  << "| Val = " 
+                  << ARR_NAME.value_store[0]
+                  << std::endl;
+    }
+};
+
+
 
 constexpr static RegistryTmpl<K,V,__COUNTER__> registry = ARR_NAME;
 
@@ -102,4 +119,9 @@ int main(){
                   << " | key = " << registry.key_store[i] 
                   << std::endl;
     }
+    std::cout << std::endl;
+
+    A a;
+    B b;
+    C c;
 }

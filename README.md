@@ -19,3 +19,10 @@ $ ===================
 $ val = 2 | key = C
 $ val = 1 | key = B
 $ val = 0 | key = A
+$
+$ Call from A constructor: 
+$ Key = A| Val = 0
+$ Call from B constructor: 
+$ Key = B| Val = 1
+$ Call from C constructor: 
+$ Key = C| Val = 2
