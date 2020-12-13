@@ -19,28 +19,28 @@ struct RegistryTmpl{
 
     // intialize and append
     constexpr RegistryTmpl(K k, V v, 
-        const RegistryTmpl<K,V,N-1>& arr_cp){
+        const RegistryTmpl<K,V,N-1>& reg_cp){
         value_store[0] = v;
         key_store[0] = k;
         if(N > 1){
             for(int i=1;i<N;i++){
-                value_store[i] = arr_cp.value_store[i-1];
-                key_store[i] = arr_cp.key_store[i-1];
+                value_store[i] = reg_cp.value_store[i-1];
+                key_store[i] = reg_cp.key_store[i-1];
             }
         }
     }
 
     // Initialize by copy
-    constexpr RegistryTmpl(const RegistryTmpl<K,V,N>& arr_cp){
+    constexpr RegistryTmpl(const RegistryTmpl<K,V,N>& reg_cp){
         for(int i=0;i<N;i++){
-            value_store[i] = arr_cp.value_store[i];
-            key_store[i] = arr_cp.key_store[i];
+            value_store[i] = reg_cp.value_store[i];
+            key_store[i] = reg_cp.key_store[i];
         }
     }
 
     // Initialize by copy
-    constexpr RegistryTmpl<K,V,N> operator=(const RegistryTmpl<K,V,N>& arr_cp) noexcept{
-        RegistryTmpl<K,V,N> tmp(arr_cp);
+    constexpr RegistryTmpl<K,V,N> operator=(const RegistryTmpl<K,V,N>& reg_cp) noexcept{
+        RegistryTmpl<K,V,N> tmp(reg_cp);
         return tmp;
     }
 
@@ -53,56 +53,56 @@ typedef std::string_view K;
 typedef int V;
 
 #define A_REF __COUNTER__ + 1
-constexpr RegistryTmpl<K,V,A_REF> arr_A("A", 0);
-#define ARR_NAME arr_A
+constexpr RegistryTmpl<K,V,A_REF> reg_A("A", 0);
+#define REG_NAME reg_A
 
 class A{
     public:
     A(){
         std::cout << "Call from A constructor: " << std::endl;
         std::cout << "Key = " 
-                  << ARR_NAME.key_store[0]
+                  << REG_NAME.key_store[0]
                   << "| Val = " 
-                  << ARR_NAME.value_store[0]
+                  << REG_NAME.value_store[0]
                   << std::endl;
     }
 };
 
 #define B_REF __COUNTER__ + 1
-constexpr RegistryTmpl<K,V,B_REF> arr_B("B", 1, ARR_NAME);
-#define ARR_NAME arr_B
+constexpr RegistryTmpl<K,V,B_REF> reg_B("B", 1, REG_NAME);
+#define REG_NAME reg_B
 
 class B{
     public:
     B(){
         std::cout << "Call from B constructor: " << std::endl;
         std::cout << "Key = " 
-                  << ARR_NAME.key_store[0]
+                  << REG_NAME.key_store[0]
                   << "| Val = " 
-                  << ARR_NAME.value_store[0]
+                  << REG_NAME.value_store[0]
                   << std::endl;
     }
 };
 
 #define C_REF __COUNTER__ + 1
-constexpr RegistryTmpl<K,V,C_REF> arr_C("C", 2, ARR_NAME);
-#define ARR_NAME arr_C
+constexpr RegistryTmpl<K,V,C_REF> reg_C("C", 2, REG_NAME);
+#define REG_NAME reg_C
 
 class C{
     public:
     C(){
         std::cout << "Call from C constructor: " << std::endl;
         std::cout << "Key = " 
-                  << ARR_NAME.key_store[0]
+                  << REG_NAME.key_store[0]
                   << "| Val = " 
-                  << ARR_NAME.value_store[0]
+                  << REG_NAME.value_store[0]
                   << std::endl;
     }
 };
 
 
 
-constexpr static RegistryTmpl<K,V,__COUNTER__> registry = ARR_NAME;
+constexpr static RegistryTmpl<K,V,__COUNTER__> registry = REG_NAME;
 
 int main(){
     static_assert(registry.size == 3);
