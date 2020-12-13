@@ -5,21 +5,21 @@
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
-template<int N>
+template<typename K, typename V, int N>
 struct RegistryTmpl{
-    std::array<int,N> value_store = {};
-    std::array<std::string_view, N> key_store = {};
+    std::array<K,N> key_store = {};
+    std::array<V,N> value_store = {};
     size_t size = N;
 
     // Initialize first entry
-    constexpr RegistryTmpl(std::string_view k, int v){
+    constexpr RegistryTmpl(K k, V v){
        value_store[0] = v;
        key_store[0] = k;
     }
 
     // intialize and append
-    constexpr RegistryTmpl(std::string_view k, int v, 
-        const RegistryTmpl<N-1>& arr_cp){
+    constexpr RegistryTmpl(K k, V v, 
+        const RegistryTmpl<K,V,N-1>& arr_cp){
         value_store[0] = v;
         key_store[0] = k;
         if(N > 1){
@@ -31,7 +31,7 @@ struct RegistryTmpl{
     }
 
     // Initialize by copy
-    constexpr RegistryTmpl(const RegistryTmpl<N>& arr_cp){
+    constexpr RegistryTmpl(const RegistryTmpl<K,V,N>& arr_cp){
         for(int i=0;i<N;i++){
             value_store[i] = arr_cp.value_store[i];
             key_store[i] = arr_cp.key_store[i];
@@ -39,8 +39,8 @@ struct RegistryTmpl{
     }
 
     // Initialize by copy
-    constexpr RegistryTmpl<N> operator=(const RegistryTmpl<N>& arr_cp){
-        RegistryTmpl<N> tmp(arr_cp);
+    constexpr RegistryTmpl<K,V,N> operator=(const RegistryTmpl<K,V,N>& arr_cp){
+        RegistryTmpl<K,V,N> tmp(arr_cp);
         return tmp;
     }
 
@@ -48,6 +48,9 @@ struct RegistryTmpl{
         return size;
     }
 };
+
+typedef std::string_view K;
+typedef int V;
 
 class A{
     public:
@@ -57,7 +60,7 @@ class A{
 };
 
 #define A_REF __COUNTER__ + 1
-constexpr RegistryTmpl<A_REF> arr_A("A", 0);
+constexpr RegistryTmpl<K,V,A_REF> arr_A("A", 0);
 #define ARR_NAME arr_A
 
 class B{
@@ -68,7 +71,7 @@ class B{
 };
 
 #define B_REF __COUNTER__ + 1
-constexpr RegistryTmpl<B_REF> arr_B("B", 1, ARR_NAME);
+constexpr RegistryTmpl<K,V,B_REF> arr_B("B", 1, ARR_NAME);
 #define ARR_NAME arr_B
 
 class C{
@@ -79,10 +82,10 @@ class C{
 };
 
 #define C_REF __COUNTER__ + 1
-constexpr RegistryTmpl<C_REF> arr_C("C", 2, ARR_NAME);
+constexpr RegistryTmpl<K,V,C_REF> arr_C("C", 2, ARR_NAME);
 #define ARR_NAME arr_C
 
-constexpr static RegistryTmpl<__COUNTER__> registry = ARR_NAME;
+constexpr static RegistryTmpl<K,V,__COUNTER__> registry = ARR_NAME;
 
 int main(){
     static_assert(registry.size == 3);
